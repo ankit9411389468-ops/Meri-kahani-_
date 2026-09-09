@@ -656,5 +656,233 @@ holdButton("raceRight","right");
 requestAnimationFrame(gameLoop);
 </script>
 <!-- ================= END BMW + GAME ================= -->
+  
+<!-- ===== VISHESH: GT650 3D + DOG BONE + TARGET GAME ===== -->
+<style>
+.vx-extra{max-width:1100px;margin:40px auto;padding:0 16px;color:#fff;font-family:inherit}
+.vx-extra .vx-card{background:rgba(10,15,25,.94);border:1px solid #168cff;border-radius:18px;padding:18px;margin:20px 0;box-shadow:0 0 24px rgba(0,140,255,.12)}
+.vx-extra h2{margin:0 0 6px;color:#42b7ff}
+.vx-extra p{opacity:.82}
+.vx-model{height:420px;width:100%;border-radius:14px;overflow:hidden;background:#050910}
+.vx-controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.vx-controls button,.vx-game-btn{border:1px solid #168cff;border-radius:12px;padding:11px 16px;background:#0b1625;color:#fff;cursor:pointer;font-weight:700}
+.vx-controls button:hover,.vx-game-btn:hover{background:#12375a}
+.vx-game-wrap{position:relative;max-width:720px;margin:auto}
+.vx-canvas{display:block;width:100%;height:auto;background:#111;border-radius:14px;border:1px solid #168cff}
+.vx-mobile{display:flex;justify-content:center;gap:18px;margin-top:12px}
+.vx-mobile button{font-size:24px;min-width:70px}
+.vx-score{font-weight:800;margin:8px 0}
+</style>
+
+<section class="vx-extra" id="gt650">
+  <div class="vx-card">
+    <h2>🏍️ GT650 3D Garage</h2>
+    <p>Future ka dream bike — 3D model ko rotate aur zoom karo.</p>
+    <div id="vxBike3D" class="vx-model"></div>
+    <div class="vx-controls">
+      <button id="vxBikeSpin">🔄 Auto Spin</button>
+      <button id="vxBikeReset">↻ Reset</button>
+    </div>
+  </div>
+
+  <div class="vx-card" id="dog-game">
+    <h2>🐶 Dog Bone Chase</h2>
+    <p>Dog ko left/right move karo aur haddi collect karo. Obstacles se bachna hai!</p>
+    <div class="vx-score">Score: <span id="dogScore">0</span></div>
+    <div class="vx-game-wrap">
+      <canvas id="dogCanvas" class="vx-canvas" width="720" height="480"></canvas>
+    </div>
+    <div class="vx-mobile">
+      <button class="vx-game-btn" id="dogLeft">⬅️</button>
+      <button class="vx-game-btn" id="dogRight">➡️</button>
+    </div>
+    <div class="vx-controls">
+      <button id="dogRestart">🔄 Restart</button>
+    </div>
+  </div>
+
+  <div class="vx-card" id="target-game">
+    <h2>🎯 Target Challenge</h2>
+    <p>Moving targets par click/tap karke score banao. Ye simple arcade target game hai.</p>
+    <div class="vx-score">Score: <span id="targetScore">0</span> | Time: <span id="targetTime">30</span>s</div>
+    <div class="vx-game-wrap">
+      <canvas id="targetCanvas" class="vx-canvas" width="720" height="480"></canvas>
+    </div>
+    <div class="vx-controls">
+      <button id="targetStart">▶️ Start / Restart</button>
+    </div>
+  </div>
+</section>
+
+<script type="module">
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.179.1/build/three.module.js";
+import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.179.1/examples/jsm/controls/OrbitControls.js";
+
+/* ---------- GT650-STYLE GENERIC 3D BIKE ---------- */
+const mount=document.getElementById("vxBike3D");
+if(mount){
+  const scene=new THREE.Scene();
+  scene.background=new THREE.Color(0x050910);
+  const camera=new THREE.PerspectiveCamera(45,mount.clientWidth/420,.1,100);
+  camera.position.set(5,2.8,7);
+
+  const renderer=new THREE.WebGLRenderer({antialias:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.setSize(mount.clientWidth,420);
+  mount.appendChild(renderer.domElement);
+
+  scene.add(new THREE.HemisphereLight(0xffffff,0x182233,2));
+  const light=new THREE.DirectionalLight(0xffffff,2.5);
+  light.position.set(5,7,5); scene.add(light);
+
+  const bike=new THREE.Group(); scene.add(bike);
+
+  const metal=new THREE.MeshStandardMaterial({color:0x1d2630,metalness:.75,roughness:.28});
+  const dark=new THREE.MeshStandardMaterial({color:0x080a0d,metalness:.35,roughness:.45});
+  const chrome=new THREE.MeshStandardMaterial({color:0xb9c2ca,metalness:.95,roughness:.18});
+  const rubber=new THREE.MeshStandardMaterial({color:0x090909,roughness:.8});
+
+  function cyl(r1,r2,len,mat,rot=[0,0,0]){
+    const m=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,len,32),mat);
+    m.rotation.set(...rot); return m;
+  }
+
+  // Wheels
+  for(const z of [-1.75,1.75]){
+    const w=cyl(.72,.72,.22,rubber,[Math.PI/2,0,0]); w.position.set(0,.78,z); bike.add(w);
+    const rim=cyl(.52,.52,.25,chrome,[Math.PI/2,0,0]); rim.position.set(0,.78,z); bike.add(rim);
+  }
+
+  // Frame + tank
+  const frame=new THREE.Mesh(new THREE.BoxGeometry(1.5,.18,3.3),metal);
+  frame.position.set(0,1.15,0); frame.rotation.x=.08; bike.add(frame);
+  const tank=new THREE.Mesh(new THREE.SphereGeometry(1,32,16),metal);
+  tank.scale.set(.95,.58,1.15); tank.position.set(0,1.7,-.15); bike.add(tank);
+
+  // Seat
+  const seat=new THREE.Mesh(new THREE.BoxGeometry(1.05,.22,1.45),dark);
+  seat.position.set(0,1.65,1.15); seat.rotation.x=-.04; bike.add(seat);
+
+  // Engine
+  const engine=cyl(.58,.58,.9,chrome,[0,0,Math.PI/2]); engine.position.set(0,.95,.05); bike.add(engine);
+
+  // Exhausts
+  for(const x of [-.52,.52]){
+    const ex=cyl(.13,.10,2.45,chrome,[0,0,Math.PI/2]);
+    ex.position.set(x,.72,.35); ex.rotation.y=.04; bike.add(ex);
+  }
+
+  // Fork + handlebars
+  for(const x of [-.28,.28]){
+    const fork=cyl(.09,.09,1.55,chrome); fork.position.set(x,1.45,-1.65); fork.rotation.x=-.18; bike.add(fork);
+  }
+  const handle=cyl(.06,.06,1.55,chrome,[0,0,Math.PI/2]);
+  handle.position.set(0,2.3,-1.55); bike.add(handle);
+
+  // Headlight
+  const lamp=new THREE.Mesh(new THREE.SphereGeometry(.3,24,16),new THREE.MeshStandardMaterial({color:0xffffcc,emissive:0x777733}));
+  lamp.position.set(0,1.95,-2.05); bike.add(lamp);
+
+  const platform=new THREE.Mesh(
+    new THREE.CylinderGeometry(3.1,3.1,.16,64),
+    new THREE.MeshStandardMaterial({color:0x0b1828,metalness:.5,roughness:.35})
+  );
+  platform.position.y=.05; scene.add(platform);
+
+  const controls=new OrbitControls(camera,renderer.domElement);
+  controls.enableDamping=true; controls.target.set(0,1.15,0);
+  let spin=true;
+  document.getElementById("vxBikeSpin").onclick=()=>spin=!spin;
+  document.getElementById("vxBikeReset").onclick=()=>{bike.rotation.set(0,0,0);camera.position.set(5,2.8,7);controls.target.set(0,1.15,0);};
+
+  function animate(){
+    requestAnimationFrame(animate);
+    if(spin) bike.rotation.y+=.006;
+    controls.update(); renderer.render(scene,camera);
+  }
+  animate();
+  addEventListener("resize",()=>{renderer.setSize(mount.clientWidth,420);camera.aspect=mount.clientWidth/420;camera.updateProjectionMatrix();});
+}
+
+/* ---------- DOG BONE CHASE ---------- */
+const dc=document.getElementById("dogCanvas");
+if(dc){
+  const ctx=dc.getContext("2d"), W=dc.width,H=dc.height;
+  let dog={x:W/2,y:H-65,w:54,h:44}, bone, rocks=[],score=0,running=true,last=0;
+  const rand=(a,b)=>Math.random()*(b-a)+a;
+  function newBone(){bone={x:rand(35,W-35),y:rand(45,H-170),r:14};}
+  function resetDog(){score=0;running=true;rocks=[];newBone();document.getElementById("dogScore").textContent=score;}
+  function drawDog(){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle="#79bd5b";ctx.fillRect(0,0,W,H);
+    ctx.fillStyle="#a6df78";for(let i=0;i<20;i++){ctx.fillRect((i*83)%W,(i*47)%H,3,12);}
+    // bone
+    ctx.save();ctx.translate(bone.x,bone.y);ctx.rotate(-.25);ctx.fillStyle="#fff0c7";
+    ctx.fillRect(-22,-5,44,10);
+    for(const s of [-1,1])for(const t of [-1,1]){ctx.beginPath();ctx.arc(s*22,t*8,7,0,Math.PI*2);ctx.fill();}
+    ctx.restore();
+    // obstacles
+    ctx.fillStyle="#75502f";rocks.forEach(o=>ctx.fillRect(o.x-15,o.y-15,30,30));
+    // cute dog
+    ctx.fillStyle="#b86f38";ctx.beginPath();ctx.ellipse(dog.x,dog.y,27,22,0,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#8b4e2c";ctx.beginPath();ctx.ellipse(dog.x-22,dog.y-10,10,18,-.5,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(dog.x-8,dog.y-5,4,0,Math.PI*2);ctx.arc(dog.x+8,dog.y-5,4,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#111";ctx.beginPath();ctx.arc(dog.x-8,dog.y-5,2,0,Math.PI*2);ctx.arc(dog.x+8,dog.y-5,2,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#222";ctx.beginPath();ctx.arc(dog.x,dog.y+3,5,0,Math.PI*2);ctx.fill();
+    ctx.font="bold 18px sans-serif";ctx.fillStyle="#fff";ctx.fillText("🐶",dog.x-12,dog.y+48);
+  }
+  function loop(t){
+    const dt=Math.min(32,t-last);last=t;
+    if(running){
+      bone.y+=.08*dt;
+      if(bone.y>H-120){newBone();}
+      if(Math.hypot(dog.x-bone.x,dog.y-bone.y)<45){score++;document.getElementById("dogScore").textContent=score;newBone();}
+      if(Math.random()<.015)rocks.push({x:rand(25,W-25),y:-20});
+      rocks.forEach(o=>o.y+=.13*dt);rocks=rocks.filter(o=>o.y<H+30);
+      for(const o of rocks)if(Math.abs(o.x-dog.x)<42&&Math.abs(o.y-dog.y)<42){running=false;}
+    }
+    drawDog();requestAnimationFrame(loop);
+  }
+  function move(dx){if(running)dog.x=Math.max(35,Math.min(W-35,dog.x+dx));}
+  document.getElementById("dogLeft").onclick=()=>move(-45);
+  document.getElementById("dogRight").onclick=()=>move(45);
+  document.getElementById("dogRestart").onclick=resetDog;
+  addEventListener("keydown",e=>{if(e.key==="ArrowLeft")move(-45);if(e.key==="ArrowRight")move(45);});
+  dc.addEventListener("pointerdown",e=>move((e.offsetX<W/2)?-45:45));
+  resetDog();requestAnimationFrame(loop);
+}
+
+/* ---------- NON-REALISTIC ARCADE TARGET GAME ---------- */
+const tc=document.getElementById("targetCanvas");
+if(tc){
+  const ctx=tc.getContext("2d"),W=tc.width,H=tc.height;
+  let target={x:W/2,y:H/2,r:30},score=0,time=30,running=false,timer;
+  function place(){target.x=45+Math.random()*(W-90);target.y=45+Math.random()*(H-90);}
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,"#93c8ed");g.addColorStop(1,"#d8c58d");ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    ctx.fillStyle="#6f7f55";for(let i=0;i<9;i++)ctx.fillRect(i*95,270-(i%3)*35,38,210);
+    ctx.fillStyle="#222";ctx.fillRect(0,385,W,95);
+    ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(target.x,target.y,target.r,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle="#222";ctx.lineWidth=6;ctx.stroke();
+    ctx.fillStyle="#555";ctx.beginPath();ctx.arc(target.x,target.y,17,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#e33";ctx.beginPath();ctx.arc(target.x,target.y,8,0,Math.PI*2);ctx.fill();
+  }
+  function start(){
+    clearInterval(timer);score=0;time=30;running=true;
+    document.getElementById("targetScore").textContent=score;document.getElementById("targetTime").textContent=time;place();draw();
+    timer=setInterval(()=>{time--;document.getElementById("targetTime").textContent=time;if(time<=0){running=false;clearInterval(timer);}},1000);
+  }
+  tc.addEventListener("pointerdown",e=>{
+    if(!running)return;
+    const r=tc.getBoundingClientRect(),x=(e.clientX-r.left)*W/r.width,y=(e.clientY-r.top)*H/r.height;
+    if(Math.hypot(x-target.x,y-target.y)<=target.r){score++;document.getElementById("targetScore").textContent=score;place();draw();}
+  });
+  document.getElementById("targetStart").onclick=start;
+  place();draw();
+}
+</script>
+<!-- ===== END VISHESH ADDITIONS ===== -->
+  
 </html>
 

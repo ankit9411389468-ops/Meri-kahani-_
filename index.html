@@ -1,194 +1,4 @@
-<!DOCTYPE html>
-<html lang="hi">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Vishesh Ki Kahani — meri yaadein, safar, photos aur meri kahani.">
-  <meta name="keywords" content="Vishesh, Vishesh Ki Kahani, Vishesh ki story, meri kahani">
-  <meta name="author" content="Vishesh">
-  <meta name="theme-color" content="#0b0b12">
-  <title>Vishesh Ki Kahani</title>
 
-  <style>
-    :root{
-      --bg:#080910; --card:#11131d; --text:#f5f5f7; --muted:#a7a9b5;
-      --line:rgba(255,255,255,.10); --accent:#b9a7ff;
-    }
-    *{box-sizing:border-box;margin:0;padding:0}
-    html{scroll-behavior:smooth}
-    body{
-      font-family:Arial,Helvetica,sans-serif;background:
-      radial-gradient(circle at 15% 10%,rgba(185,167,255,.15),transparent 28%),
-      radial-gradient(circle at 90% 25%,rgba(100,180,255,.10),transparent 25%),var(--bg);
-      color:var(--text);line-height:1.6;
-    }
-    a{color:inherit;text-decoration:none}
-    .wrap{max-width:1050px;margin:auto;padding:0 20px}
-    nav{
-      position:sticky;top:0;z-index:20;backdrop-filter:blur(18px);
-      background:rgba(8,9,16,.72);border-bottom:1px solid var(--line)
-    }
-    .navin{height:68px;display:flex;align-items:center;justify-content:space-between}
-    .logo{font-weight:800;letter-spacing:.3px}.logo span{color:var(--accent)}
-    .links{display:flex;gap:24px;color:var(--muted);font-size:14px}
-    .links a:hover{color:#fff}
-    .hero{min-height:86vh;display:grid;place-items:center;text-align:center;padding:90px 0 70px}
-    .eyebrow{letter-spacing:7px;color:var(--muted);font-size:12px;text-transform:uppercase}
-    h1{font-size:clamp(52px,10vw,105px);line-height:.95;letter-spacing:-5px;margin:22px 0}
-    .hero h1 span{color:var(--accent)}
-    .hero p{max-width:650px;margin:auto;color:#c5c6cf;font-size:18px}
-    .buttons{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:30px}
-    .btn{
-      border:1px solid var(--line);padding:13px 22px;border-radius:999px;
-      background:rgba(255,255,255,.04);font-weight:700
-    }
-    .btn.primary{background:#fff;color:#080910}
-    section{padding:80px 0}
-    .label{color:var(--muted);font-size:12px;letter-spacing:4px;text-transform:uppercase}
-    h2{font-size:clamp(32px,6vw,55px);letter-spacing:-2px;margin:10px 0 18px}
-    .lead{color:var(--muted);max-width:680px}
-    .story{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;margin-top:32px}
-    .card{
-      background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.025));
-      border:1px solid var(--line);border-radius:24px;padding:28px
-    }
-    .bigquote{font-size:30px;line-height:1.3}
-    .timeline{display:grid;gap:14px}
-    .item{display:flex;gap:16px;align-items:flex-start}
-    .num{min-width:42px;height:42px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;color:var(--accent)}
-    .item p{color:var(--muted);font-size:14px}
-    .gallery{
-      display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px
-    }
-    .photo{
-      aspect-ratio:1/1;border-radius:20px;overflow:hidden;border:1px solid var(--line);
-      background:rgba(255,255,255,.04);display:grid;place-items:center;color:var(--muted)
-    }
-    .photo img{width:100%;height:100%;object-fit:cover;display:block}
-    .upload{
-      margin-top:18px;padding:22px;border:1px dashed rgba(255,255,255,.2);
-      border-radius:20px;text-align:center;color:var(--muted)
-    }
-    input[type=file]{display:none}
-    .upload label{display:inline-block;cursor:pointer;border:1px solid var(--line);padding:11px 18px;border-radius:999px;color:#fff;margin-top:10px}
-    .notes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px}
-    .note h3{margin-bottom:7px}.note p{color:var(--muted);font-size:14px}
-    footer{padding:50px 0;border-top:1px solid var(--line);text-align:center;color:var(--muted)}
-    @media(max-width:750px){
-      .links{gap:12px}.links a:nth-child(n+3){display:none}
-      .story,.notes{grid-template-columns:1fr}.gallery{grid-template-columns:repeat(2,1fr)}
-      h1{letter-spacing:-3px}
-    }
-  </style>
-</head>
-
-<body>
-<nav>
-  <div class="wrap navin">
-    <a class="logo" href="#home">Vishesh<span>.</span></a>
-    <div class="links">
-      <a href="#story">Story</a><a href="#photos">Photos</a><a href="#journey">Journey</a><a href="#contact">About</a>
-    </div>
-  </div>
-</nav>
-
-<main id="home">
-  <section class="hero">
-    <div class="wrap">
-      <div class="eyebrow">THIS IS</div>
-      <h1>Vishesh <span>Ki Kahani</span></h1>
-      <p>Ek simple si kahani — sapne, mehnat, yaadein aur khud ko behtar banane ka safar.</p>
-      <div class="buttons">
-        <a class="btn primary" href="#story">Kahani padho ↓</a>
-        <a class="btn" href="#photos">Photos dekho</a>
-      </div>
-    </div>
-  </section>
-
-  <section id="story">
-    <div class="wrap">
-      <div class="label">01 — The Beginning</div>
-      <h2>Har kahani ki ek shuruaat hoti hai.</h2>
-      <p class="lead">Ye website meri memories, moments aur journey ko ek jagah rakhne ke liye hai. Yahan waqt ke saath meri kahani badhti rahegi.</p>
-      <div class="story">
-        <div class="card bigquote">“Zindagi perfect hone ka wait nahi karti — jo pal milta hai, usse yaadgaar banana padta hai.”</div>
-        <div class="card timeline">
-          <div class="item"><div class="num">01</div><div><b>Dreams</b><p>Kuch bade sapne, kuch chhote goals.</p></div></div>
-          <div class="item"><div class="num">02</div><div><b>Memories</b><p>Woh moments jo baar-baar yaad aate hain.</p></div></div>
-          <div class="item"><div class="num">03</div><div><b>Journey</b><p>Seekhna, badhna aur aage badhte rehna.</p></div></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="photos">
-    <div class="wrap">
-      <div class="label">02 — Memories</div>
-      <h2>My Photos</h2>
-      <p class="lead">Apni favourite photos yahan add karo. Neeche wala button browser me photos ka preview banata hai.</p>
-
-      <div class="gallery" id="gallery">
-        <div class="photo">Your photo</div>
-        <div class="photo">Your photo</div>
-        <div class="photo">Your photo</div>
-      </div>
-
-      <div class="upload">
-        <b>Apni photos add karo</b><br>
-        <span>Photos select karte hi gallery me preview dikhega.</span><br>
-        <label for="photoInput">＋ Choose Photos</label>
-        <input id="photoInput" type="file" accept="image/*" multiple>
-      </div>
-    </div>
-  </section>
-
-  <section id="journey">
-    <div class="wrap">
-      <div class="label">03 — My Journey</div>
-      <h2>Abhi kahani baaki hai.</h2>
-      <div class="notes">
-        <div class="card note"><h3>📚 Learning</h3><p>Nayi cheezein seekhna aur har din thoda better banna.</p></div>
-        <div class="card note"><h3>✨ Moments</h3><p>Chhoti khushiyon aur special memories ko save karna.</p></div>
-        <div class="card note"><h3>🚀 Future</h3><p>Aage kya hoga, woh abhi likhna baaki hai.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="contact">
-    <div class="wrap">
-      <div class="card" style="text-align:center">
-        <div class="label">04 — About</div>
-        <h2>I'm Vishesh.</h2>
-        <p class="lead" style="margin:auto">Welcome to my little corner of the internet. Ye meri kahani ka digital version hai — aur ye abhi shuru hui hai.</p>
-      </div>
-    </div>
-  </section>
-</main>
-
-<footer>
-  <div class="wrap">© 2026 Vishesh Ki Kahani · Made with ❤️</div>
-</footer>
-
-<script>
-  const input = document.getElementById('photoInput');
-  const gallery = document.getElementById('gallery');
-
-  input.addEventListener('change', () => {
-    [...input.files].forEach(file => {
-      if (!file.type.startsWith('image/')) return;
-      const box = document.createElement('div');
-      box.className = 'photo';
-      const img = document.createElement('img');
-      img.src = URL.createObjectURL(file);
-      img.alt = 'Vishesh ki photo';
-      box.innerHTML = '';
-      box.appendChild(img);
-      gallery.appendChild(box);
-    });
-  });
-</script>
-</body>
-</html>
 <!doctype html>
 <html lang="en">
 <head>
@@ -274,5 +84,577 @@ const input=document.getElementById("files"),gallery=document.getElementById("ga
 input.addEventListener("change",()=>{gallery.innerHTML="";[...input.files].forEach(file=>{const box=document.createElement("div"),img=document.createElement("img");box.className="photo";img.src=URL.createObjectURL(file);box.appendChild(img);gallery.appendChild(box)})});
 </script>
 </body>
+<!-- ================= BMW 3D + RACING GAME ================= -->
+<style>
+  .vishesh-bmw-game{
+    max-width:1100px;
+    margin:auto;
+    padding:70px 20px;
+  }
+  .bmw-box,.race-box{
+    background:linear-gradient(145deg,#13131b,#0d0d12);
+    border:1px solid #282831;
+    border-radius:20px;
+    padding:22px;
+    margin-top:20px;
+  }
+  #bmw3d{
+    height:420px;
+    width:100%;
+    border-radius:16px;
+    overflow:hidden;
+    background:#090a10;
+  }
+  .game-area{
+    max-width:420px;
+    margin:auto;
+  }
+  #raceGame{
+    width:100%;
+    display:block;
+    background:#151720;
+    border-radius:16px;
+    border:1px solid #303040;
+    touch-action:none;
+  }
+  .game-controls{
+    display:flex;
+    gap:10px;
+    margin-top:12px;
+  }
+  .game-controls button,
+  .bmw-buttons button{
+    flex:1;
+    padding:13px;
+    border-radius:12px;
+    border:1px solid #39394a;
+    background:#181820;
+    color:white;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .bmw-buttons{
+    display:flex;
+    gap:10px;
+    margin-top:12px;
+  }
+  #raceScore{
+    font-size:20px;
+    font-weight:800;
+    margin-bottom:10px;
+  }
+</style>
+
+<section class="vishesh-bmw-game" id="bmw">
+  <div class="eyebrow">My Dream 🚗</div>
+  <h2>BMW 3D Garage</h2>
+  <p style="color:#aaa">
+    Future ka dream — BMW. Abhi website par 3D garage me dekh 😂🔥
+  </p>
+
+  <div class="bmw-box">
+    <div id="bmw3d"></div>
+
+    <div class="bmw-buttons">
+      <button onclick="bmwAutoSpin()">🔄 Auto Spin</button>
+      <button onclick="bmwReset()">↩️ Reset</button>
+    </div>
+  </div>
+</section>
+
+<section class="vishesh-bmw-game" id="racing">
+  <div class="eyebrow">Game Zone 🎮</div>
+  <h2>Vishesh Racing</h2>
+  <p style="color:#aaa">
+    Car chalao, obstacles se bacho aur high score banao 🏁
+  </p>
+
+  <div class="race-box game-area">
+    <div id="raceScore">Score: 0</div>
+    <canvas id="raceGame" width="360" height="560"></canvas>
+
+    <div class="game-controls">
+      <button id="raceLeft">⬅️ LEFT</button>
+      <button id="raceRight">RIGHT ➡️</button>
+    </div>
+  </div>
+</section>
+
+<!-- THREE.JS BMW 3D -->
+<script type="module">
+import * as THREE from
+"https://cdn.jsdelivr.net/npm/three@0.179.1/build/three.module.js";
+
+import { OrbitControls } from
+"https://cdn.jsdelivr.net/npm/three@0.179.1/examples/jsm/controls/OrbitControls.js";
+
+const container = document.getElementById("bmw3d");
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x090a10);
+
+const camera = new THREE.PerspectiveCamera(
+  42,
+  container.clientWidth / container.clientHeight,
+  0.1,
+  100
+);
+
+camera.position.set(5,2.7,6);
+
+const renderer = new THREE.WebGLRenderer({
+  antialias:true
+});
+
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(container.clientWidth,container.clientHeight);
+
+container.appendChild(renderer.domElement);
+
+const controls = new OrbitControls(
+  camera,
+  renderer.domElement
+);
+
+controls.enableDamping = true;
+controls.target.set(0,1,0);
+
+scene.add(
+  new THREE.HemisphereLight(0xffffff,0x202030,2)
+);
+
+const light = new THREE.DirectionalLight(0xffffff,3);
+light.position.set(4,7,5);
+scene.add(light);
+
+const car = new THREE.Group();
+scene.add(car);
+
+const bodyMaterial = new THREE.MeshStandardMaterial({
+  color:0x252a33,
+  metalness:.85,
+  roughness:.22
+});
+
+const glassMaterial = new THREE.MeshStandardMaterial({
+  color:0x172330,
+  metalness:.25,
+  roughness:.12
+});
+
+const tireMaterial = new THREE.MeshStandardMaterial({
+  color:0x050505,
+  roughness:.75
+});
+
+const rimMaterial = new THREE.MeshStandardMaterial({
+  color:0xbfc4cc,
+  metalness:.9,
+  roughness:.2
+});
+
+function cube(size,material,pos){
+  const mesh = new THREE.Mesh(
+    new THREE.BoxGeometry(...size),
+    material
+  );
+
+  mesh.position.set(...pos);
+  car.add(mesh);
+}
+
+/* BMW-style sedan body */
+
+cube([3.7,.65,1.75],bodyMaterial,[0,1,0]);
+
+cube([2.2,.65,1.55],bodyMaterial,[0,1.48,0]);
+
+cube([1.65,.48,1.58],glassMaterial,[0,1.72,0]);
+
+/* Wheels */
+
+for(const x of [-1.35,1.35]){
+  for(const z of [-.92,.92]){
+
+    const wheel = new THREE.Mesh(
+      new THREE.CylinderGeometry(.42,.42,.25,32),
+      tireMaterial
+    );
+
+    wheel.rotation.x=Math.PI/2;
+    wheel.rotation.z=Math.PI/2;
+
+    wheel.position.set(x,.65,z);
+
+    car.add(wheel);
+
+    const rim = new THREE.Mesh(
+      new THREE.CylinderGeometry(.22,.22,.27,20),
+      rimMaterial
+    );
+
+    rim.rotation.x=Math.PI/2;
+    rim.rotation.z=Math.PI/2;
+
+    rim.position.set(x,.65,z);
+
+    car.add(rim);
+  }
+}
+
+/* Lights */
+
+const frontLight = new THREE.MeshStandardMaterial({
+  color:0xffffff
+});
+
+const rearLight = new THREE.MeshStandardMaterial({
+  color:0xff3333
+});
+
+cube([.25,.16,1.45],frontLight,[1.88,1.08,0]);
+cube([.25,.16,1.45],rearLight,[-1.88,1.08,0]);
+
+/* Platform */
+
+const platform = new THREE.Mesh(
+  new THREE.CylinderGeometry(5,5,.12,64),
+  new THREE.MeshStandardMaterial({
+    color:0x121521,
+    roughness:.8
+  })
+);
+
+platform.position.y=.05;
+scene.add(platform);
+
+let autoSpin=false;
+
+window.bmwAutoSpin=function(){
+  autoSpin=!autoSpin;
+};
+
+window.bmwReset=function(){
+  car.rotation.set(0,0,0);
+
+  camera.position.set(5,2.7,6);
+
+  controls.target.set(0,1,0);
+
+  controls.update();
+};
+
+function resizeBMW(){
+
+  renderer.setSize(
+    container.clientWidth,
+    container.clientHeight
+  );
+
+  camera.aspect =
+    container.clientWidth /
+    container.clientHeight;
+
+  camera.updateProjectionMatrix();
+}
+
+window.addEventListener("resize",resizeBMW);
+
+function animateBMW(){
+
+  requestAnimationFrame(animateBMW);
+
+  if(autoSpin){
+    car.rotation.y += .008;
+  }
+
+  controls.update();
+
+  renderer.render(scene,camera);
+}
+
+animateBMW();
+</script>
+
+
+<!-- ================= RACING GAME ================= -->
+
+<script>
+const canvas = document.getElementById("raceGame");
+const ctx = canvas.getContext("2d");
+
+const scoreText = document.getElementById("raceScore");
+
+let player = {
+  x:180,
+  y:480,
+  w:38,
+  h:62
+};
+
+let obstacles=[];
+let score=0;
+let gameOver=false;
+let keys={
+  left:false,
+  right:false
+};
+
+let lastTime=0;
+let spawnTimer=0;
+
+function drawCar(x,y,w,h,main){
+
+  ctx.save();
+
+  ctx.translate(x,y);
+
+  ctx.fillStyle = main ? "#d8dde5" : "#777b86";
+
+  ctx.fillRect(
+    -w/2,
+    -h/2,
+    w,
+    h
+  );
+
+  ctx.fillStyle="#172330";
+
+  ctx.fillRect(
+    -w*.34,
+    -h*.22,
+    w*.68,
+    h*.25
+  );
+
+  ctx.fillStyle="#111";
+
+  ctx.fillRect(
+    -w*.46,
+    -h*.40,
+    w*.92,
+    7
+  );
+
+  ctx.fillRect(
+    -w*.46,
+    h*.33,
+    w*.92,
+    7
+  );
+
+  ctx.restore();
+}
+
+function collision(a,b){
+
+  return Math.abs(a.x-b.x)
+    < (a.w+b.w)/2-5
+
+    &&
+
+    Math.abs(a.y-b.y)
+    < (a.h+b.h)/2-7;
+}
+
+function drawRoad(){
+
+  ctx.fillStyle="#151720";
+  ctx.fillRect(0,0,360,560);
+
+  ctx.fillStyle="#343744";
+  ctx.fillRect(35,0,290,560);
+
+  ctx.setLineDash([28,24]);
+
+  ctx.lineWidth=5;
+  ctx.strokeStyle="#c9c9c9";
+
+  ctx.beginPath();
+
+  ctx.moveTo(180,0);
+  ctx.lineTo(180,560);
+
+  ctx.stroke();
+
+  ctx.setLineDash([]);
+
+  ctx.fillStyle="#08090d";
+
+  ctx.fillRect(0,0,35,560);
+  ctx.fillRect(325,0,35,560);
+}
+
+function spawnObstacle(){
+
+  obstacles.push({
+
+    x:85 + Math.random()*190,
+
+    y:-50,
+
+    w:38,
+
+    h:58,
+
+    speed:3 + Math.min(score/700,3)
+
+  });
+}
+
+function gameLoop(time){
+
+  drawRoad();
+
+  if(!gameOver){
+
+    if(keys.left){
+      player.x-=4;
+    }
+
+    if(keys.right){
+      player.x+=4;
+    }
+
+    player.x=Math.max(
+      60,
+      Math.min(300,player.x)
+    );
+
+    spawnTimer += time-lastTime;
+
+    if(spawnTimer>850){
+
+      spawnObstacle();
+
+      spawnTimer=0;
+    }
+
+    obstacles.forEach(o=>{
+      o.y+=o.speed;
+    });
+
+    obstacles =
+      obstacles.filter(o=>o.y<620);
+
+    obstacles.forEach(o=>{
+
+      if(collision(player,o)){
+        gameOver=true;
+      }
+    });
+
+    score++;
+  }
+
+  obstacles.forEach(o=>{
+    drawCar(
+      o.x,
+      o.y,
+      o.w,
+      o.h,
+      false
+    );
+  });
+
+  drawCar(
+    player.x,
+    player.y,
+    player.w,
+    player.h,
+    true
+  );
+
+  scoreText.innerText =
+    "Score: "+Math.floor(score/10);
+
+  if(gameOver){
+
+    ctx.fillStyle="#fff";
+
+    ctx.textAlign="center";
+
+    ctx.font="bold 28px Arial";
+
+    ctx.fillText(
+      "GAME OVER",
+      180,
+      260
+    );
+
+    ctx.font="16px Arial";
+
+    ctx.fillText(
+      "Tap game to restart",
+      180,
+      292
+    );
+  }
+
+  lastTime=time;
+
+  requestAnimationFrame(gameLoop);
+}
+
+canvas.addEventListener("pointerdown",()=>{
+
+  if(gameOver){
+
+    obstacles=[];
+    score=0;
+    spawnTimer=0;
+    gameOver=false;
+  }
+
+});
+
+document.addEventListener("keydown",e=>{
+
+  if(e.key==="ArrowLeft"){
+    keys.left=true;
+  }
+
+  if(e.key==="ArrowRight"){
+    keys.right=true;
+  }
+
+});
+
+document.addEventListener("keyup",e=>{
+
+  if(e.key==="ArrowLeft"){
+    keys.left=false;
+  }
+
+  if(e.key==="ArrowRight"){
+    keys.right=false;
+  }
+
+});
+
+function holdButton(id,key){
+
+  const button =
+    document.getElementById(id);
+
+  button.onpointerdown=()=>{
+    keys[key]=true;
+  };
+
+  button.onpointerup=()=>{
+    keys[key]=false;
+  };
+
+  button.onpointerleave=()=>{
+    keys[key]=false;
+  };
+}
+
+holdButton("raceLeft","left");
+holdButton("raceRight","right");
+
+requestAnimationFrame(gameLoop);
+</script>
+<!-- ================= END BMW + GAME ================= -->
 </html>
 

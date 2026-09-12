@@ -5,132 +5,402 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#09051c">
 <title>VISHESH WORLD 🎮</title>
-<meta name="description" content="VISHESH WORLD — a colorful personal mini game world.">
+<meta name="description" content="VISHESH WORLD — 3D Garage, Minecraft Multiplayer Voxel World, Space Shooter, Snake & Mini Games.">
+
+<!-- 3D & Multiplayer CDN Libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+
 <style>
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#fff;background:#08051a;overflow-x:hidden}
 body:before{content:"";position:fixed;inset:0;z-index:-2;background:radial-gradient(circle at 15% 10%,#ff2e9a44,transparent 30%),radial-gradient(circle at 85% 20%,#00e5ff33,transparent 30%),radial-gradient(circle at 50% 90%,#7c3cff33,transparent 35%),linear-gradient(135deg,#08051a,#11103b 55%,#08051a)}
 nav{position:sticky;top:0;z-index:20;padding:14px 5%;display:flex;align-items:center;justify-content:space-between;background:#09051acc;backdrop-filter:blur(16px);border-bottom:1px solid #ffffff18}
 .logo{font-weight:1000;letter-spacing:2px;font-size:24px;background:linear-gradient(90deg,#00e5ff,#ff38b8,#ffe45c);-webkit-background-clip:text;background-clip:text;color:transparent}
 nav a{color:#fff;text-decoration:none;margin-left:18px;font-weight:700;font-size:14px}
-.hero{min-height:78vh;display:grid;place-items:center;text-align:center;padding:60px 18px 30px}
-.hero h1{font-size:clamp(55px,14vw,150px);line-height:.85;margin:0;font-weight:1000;letter-spacing:-5px;text-shadow:0 0 30px #ff38b855}
+.hero{min-height:60vh;display:grid;place-items:center;text-align:center;padding:40px 18px 20px}
+.hero h1{font-size:clamp(45px,12vw,130px);line-height:.85;margin:0;font-weight:1000;letter-spacing:-4px;text-shadow:0 0 30px #ff38b855}
 .hero h1 span{background:linear-gradient(90deg,#00e5ff,#8b5cf6,#ff38b8,#ffe45c);-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero p{font-size:clamp(17px,3vw,25px);color:#ddd;margin:25px auto;max-width:700px}
-.badge{display:inline-block;padding:9px 16px;border:1px solid #ffffff22;border-radius:999px;background:#ffffff0c;color:#ffe45c;font-weight:800}
-.games{width:min(1100px,92%);margin:auto;padding:30px 0 80px}
-.games h2{text-align:center;font-size:clamp(32px,6vw,58px);margin:0 0 12px}
-.sub{text-align:center;color:#aaa;margin:0 auto 35px}
+.hero p{font-size:clamp(16px,2.5vw,22px);color:#ddd;margin:20px auto;max-width:700px}
+.badge{display:inline-block;padding:8px 16px;border:1px solid #ffffff22;border-radius:999px;background:#ffffff0c;color:#ffe45c;font-weight:800}
+
+/* SECTION CONTAINERS */
+.game-section{width:min(1100px,92%);margin:10px auto 40px;background:#ffffff0b;border:1px solid #ffffff18;border-radius:28px;padding:22px;box-shadow:0 20px 70px #0008;backdrop-filter:blur(16px)}
+.section-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;margin-bottom:15px}
+.section-title h2{font-size:clamp(24px,4vw,38px);margin:0;background:linear-gradient(90deg,#00e5ff,#ffe45c);-webkit-background-clip:text;background-clip:text;color:transparent}
+.section-title p{margin:4px 0 0;color:#aaa;font-size:14px}
+
+/* 3D GARAGE & MINECRAFT CONTAINERS */
+.garage-container,.mc-container{position:relative;width:100%;height:460px;border-radius:20px;overflow:hidden;background:#05030f;border:1px solid #ffffff15;touch-action:none}
+#garageCanvas,#mcCanvas{width:100%;height:100%;display:block;cursor:grab}
+.controls-bar{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:15px}
+.btn-ui{background:#ffffff15;color:#fff;border:1px solid #ffffff33;padding:10px 18px;border-radius:12px;font-weight:800;cursor:pointer;transition:all .2s ease}
+.btn-ui.active,.btn-ui:hover{background:linear-gradient(135deg,#00e5ff,#8b5cf6);border-color:transparent;color:#000;box-shadow:0 0 15px #00e5ff66}
+.overlay-badge{position:absolute;top:15px;left:15px;background:#000000aa;backdrop-filter:blur(8px);border:1px solid #ffffff22;padding:8px 14px;border-radius:10px;font-weight:900;color:#00e5ff;font-size:13px;pointer-events:none;z-index:5}
+
+/* MINECRAFT UI OVERLAYS */
+.mc-crosshair{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:24px;color:#fff;pointer-events:none;z-index:10;text-shadow:0 0 4px #000}
+.mc-hotbar{position:absolute;bottom:15px;left:50%;transform:translateX(-50%);display:flex;gap:8px;background:#00000099;padding:8px;border-radius:12px;border:1px solid #ffffff33;z-index:10}
+.mc-slot{width:40px;height:40px;border:2px solid #555;border-radius:8px;cursor:pointer;display:grid;place-items:center;font-weight:bold;font-size:12px}
+.mc-slot.selected{border-color:#ffe45c;box-shadow:0 0 10px #ffe45c}
+.mp-panel{position:absolute;top:15px;right:15px;background:#000000cc;padding:12px;border-radius:12px;border:1px solid #ffffff22;z-index:10;display:flex;flex-direction:column;gap:8px;max-width:220px}
+.mp-panel input{background:#111;border:1px solid #444;color:#fff;padding:6px 10px;border-radius:6px;font-size:12px}
+
+/* GRID GAMES */
+.games{width:min(1100px,92%);margin:auto;padding:20px 0 80px}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
 .card{background:#ffffff0b;border:1px solid #ffffff18;border-radius:25px;padding:18px;box-shadow:0 20px 70px #0006;backdrop-filter:blur(12px)}
-.card h3{margin:4px 0 6px;font-size:25px}.card p{color:#aaa;margin:0 0 12px}
-canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;border-radius:18px;background:#111;border:1px solid #ffffff15;touch-action:none}
+.card h3{margin:4px 0 6px;font-size:22px}.card p{color:#aaa;margin:0 0 12px;font-size:14px}
+canvas.game-canvas{display:block;width:100%;height:auto;aspect-ratio:16/10;border-radius:18px;background:#111;border:1px solid #ffffff15;touch-action:none}
 .hud{display:flex;justify-content:space-between;gap:10px;margin:10px 0;font-weight:900;color:#ffe45c}.hud span:last-child{color:#00e5ff}
 button{border:0;border-radius:13px;padding:12px 16px;font-size:15px;font-weight:900;color:#08051a;background:linear-gradient(135deg,#00e5ff,#ffe45c);cursor:pointer;box-shadow:0 8px 22px #0005}
 button:active{transform:scale(.96)}
 .controls{display:flex;justify-content:center;gap:10px;margin-top:12px;flex-wrap:wrap}.controls button{min-width:58px}
 .help{font-size:12px;color:#888;text-align:center;margin-top:9px}
 footer{text-align:center;padding:45px 15px;color:#888;border-top:1px solid #ffffff12}.bigv{font-size:32px;font-weight:1000;color:#fff}
-@media(max-width:760px){nav a{display:none}.grid{grid-template-columns:1fr}.hero{min-height:65vh}.hero h1{letter-spacing:-3px}}
+@media(max-width:760px){nav a{display:none}.grid{grid-template-columns:1fr}.hero h1{letter-spacing:-2px}.garage-container,.mc-container{height:350px}}
 </style>
 </head>
 <body>
-<nav><div class="logo">VISHESH WORLD</div><div><a href="#games">GAMES</a><a href="#about">ABOUT</a></div></nav>
+
+<nav>
+  <div class="logo">VISHESH WORLD</div>
+  <div>
+    <a href="#garage">3D GARAGE</a>
+    <a href="#minecraft">MINECRAFT MP</a>
+    <a href="#games">ALL GAMES</a>
+  </div>
+</nav>
 
 <section class="hero">
 <div>
-<div class="badge">🎮 VISHESH'S GAME WORLD</div>
-<h1><span>VISHESH</span><br>WORLD</h1>
-<p>Ek colorful mini game universe — drive, ride, chase & hit the high score. Built around one name: <b>VISHESH</b>.</p>
-<a href="#games"><button>ENTER THE WORLD ▶</button></a>
+  <div class="badge">🎮 VISHESH'S MEGA GAME HUB</div>
+  <h1><span>VISHESH</span><br>WORLD</h1>
+  <p>3D Garage, Minecraft 3D Multiplayer, Galaxy Invaders, Snake & Classic Mini-Games!</p>
+  <a href="#minecraft"><button>PLAY MULTIPLAYER MINECRAFT ▶</button></a>
 </div>
 </section>
 
+<!-- 1. 3D GARAGE SECTION -->
+<section class="game-section" id="garage">
+  <div class="section-header">
+    <div class="section-title">
+      <h2>🏎️ VISHESH 3D GARAGE</h2>
+      <p>Drag to rotate 360°, inspect details & switch luxury rides.</p>
+    </div>
+  </div>
+  <div class="garage-container">
+    <div class="overlay-badge" id="modelLabel">SHOWROOM: BMW M4 COMPETITION</div>
+    <canvas id="garageCanvas"></canvas>
+  </div>
+  <div class="controls-bar">
+    <button class="btn-ui active" id="btnBMW">🚘 BMW M4</button>
+    <button class="btn-ui" id="btnGT650">🏍️ CONTINENTAL GT650</button>
+    <button class="btn-ui" id="btnSpin">🔄 Auto-Spin: ON</button>
+  </div>
+</section>
+
+<!-- 2. MINECRAFT 3D MULTIPLAYER SECTION -->
+<section class="game-section" id="minecraft">
+  <div class="section-header">
+    <div class="section-title">
+      <h2>🧱 VISHESH CRAFT (3D MULTIPLAYER)</h2>
+      <p>Build & destroy blocks! Play solo or share Room ID with a friend to play together online.</p>
+    </div>
+  </div>
+  <div class="mc-container" id="mcBox">
+    <div class="overlay-badge" id="mcStatus">CLICK GAME TO LOCK MOUSE & PLAY</div>
+    <div class="mc-crosshair">+</div>
+    
+    <!-- Multiplayer PeerJS Panel -->
+    <div class="mp-panel">
+      <div style="font-weight:bold;font-size:12px;color:#00e5ff">ONLINE MULTIPLAYER</div>
+      <div style="font-size:10px;color:#aaa">My ID: <span id="myPeerId" style="color:#ffe45c">Connecting...</span></div>
+      <input type="text" id="friendIdInput" placeholder="Enter Friend's ID">
+      <button class="btn-ui" id="btnConnectPeer" style="padding:6px;font-size:12px">JOIN FRIEND</button>
+      <div id="peerStatus" style="font-size:10px;color:#8be28b">Singleplayer Mode</div>
+    </div>
+
+    <!-- Hotbar for Block Selection -->
+    <div class="mc-hotbar">
+      <div class="mc-slot selected" data-block="1" style="background:#557a2b">GRASS</div>
+      <div class="mc-slot" data-block="2" style="background:#795548">DIRT</div>
+      <div class="mc-slot" data-block="3" style="background:#808080">STONE</div>
+      <div class="mc-slot" data-block="4" style="background:#b8860b">WOOD</div>
+      <div class="mc-slot" data-block="5" style="background:#4682b4">BRICK</div>
+    </div>
+    
+    <canvas id="mcCanvas"></canvas>
+  </div>
+  <div class="help" style="margin-top:10px">Controls: <b>W, A, S, D</b> = Move | <b>Space</b> = Jump | <b>Left Click</b> = Destroy Block | <b>Right Click</b> = Place Block | <b>Keys 1-5</b> = Switch Block</div>
+</section>
+
+<!-- 3. ALL MINI GAMES GRID -->
 <section class="games" id="games">
-<h2>SELECT YOUR GAME</h2><p class="sub">No downloads. No libraries. Just open this page and play.</p>
+<h2 style="text-align:center;font-size:clamp(30px,5vw,50px);margin-bottom:20px">ARCADE & MINI GAMES</h2>
+
 <div class="grid">
 
-<div class="card">
-<h3>🚗 VISHESH CITY DRIVE</h3><p>Traffic dodge karo, coins collect karo aur maximum score banao.</p>
-<div class="hud"><span id="carStatus">READY</span><span>Score: <b id="carScore">0</b></span></div>
-<canvas id="car" width="800" height="500"></canvas>
-<div class="controls"><button id="carLeft">◀</button><button id="carStart">START</button><button id="carRight">▶</button></div>
-<div class="help">Keyboard: A/D or ←/→ · Mobile: buttons</div>
-</div>
+  <!-- GALAXY SHOOTER -->
+  <div class="card">
+    <h3>🚀 GALAXY INVADERS</h3><p>Shoot incoming alien ships and survive!</p>
+    <div class="hud"><span id="spaceStatus">READY</span><span>Score: <b id="spaceScore">0</b></span></div>
+    <canvas id="space" class="game-canvas" width="800" height="500"></canvas>
+    <div class="controls"><button id="spaceLeft">◀</button><button id="spaceStart">START / FIRE</button><button id="spaceRight">▶</button></div>
+    <div class="help">Keyboard: ←/→ to move, Space to Shoot</div>
+  </div>
 
-<div class="card">
-<h3>🏍️ VISHESH BIKE RUSH</h3><p>Fast lane change karo aur obstacles se bachke distance badhao.</p>
-<div class="hud"><span id="bikeStatus">READY</span><span>Distance: <b id="bikeScore">0</b></span></div>
-<canvas id="bike" width="800" height="500"></canvas>
-<div class="controls"><button id="bikeLeft">◀</button><button id="bikeStart">START</button><button id="bikeRight">▶</button></div>
-<div class="help">Keyboard: A/D or ←/→ · Mobile: buttons</div>
-</div>
+  <!-- SNAKE GAME -->
+  <div class="card">
+    <h3>🐍 CLASSIC NEON SNAKE</h3><p>Eat food pellets, grow long & don't hit walls.</p>
+    <div class="hud"><span id="snakeStatus">READY</span><span>Score: <b id="snakeScore">0</b></span></div>
+    <canvas id="snake" class="game-canvas" width="800" height="500"></canvas>
+    <div class="controls">
+      <button id="snakeUp">▲</button>
+      <button id="snakeLeft">◀</button>
+      <button id="snakeStart">START</button>
+      <button id="snakeRight">▶</button>
+      <button id="snakeDown">▼</button>
+    </div>
+    <div class="help">Keyboard: Arrow Keys (Up, Down, Left, Right)</div>
+  </div>
 
-<div class="card">
-<h3>🐕 DOG BONE CHASE</h3><p>Dog ko move karo aur falling bones collect karo.</p>
-<div class="hud"><span id="dogStatus">READY</span><span>Score: <b id="dogScore">0</b></span></div>
-<canvas id="dog" width="800" height="500"></canvas>
-<div class="controls"><button id="dogLeft">◀</button><button id="dogStart">START</button><button id="dogRight">▶</button></div>
-<div class="help">Keyboard: A/D or ←/→ · Mobile: buttons</div>
-</div>
+  <!-- CITY DRIVE -->
+  <div class="card">
+    <h3>🚗 VISHESH CITY DRIVE</h3><p>Traffic dodge karo, coins collect karo aur score banao.</p>
+    <div class="hud"><span id="carStatus">READY</span><span>Score: <b id="carScore">0</b></span></div>
+    <canvas id="car" class="game-canvas" width="800" height="500"></canvas>
+    <div class="controls"><button id="carLeft">◀</button><button id="carStart">START</button><button id="carRight">▶</button></div>
+    <div class="help">Keyboard: A/D or ←/→ · Mobile: buttons</div>
+  </div>
 
-<div class="card">
-<h3>🎯 NEON TARGET</h3><p>20 seconds mein jitne colorful targets tap/click kar sako karo.</p>
-<div class="hud"><span id="targetStatus">READY</span><span>Hits: <b id="targetScore">0</b></span></div>
-<canvas id="target" width="800" height="500"></canvas>
-<div class="controls"><button id="targetStart">START 20s</button></div>
-<div class="help">Mouse ya finger se glowing targets tap karo.</div>
-</div>
+  <!-- BIKE RUSH -->
+  <div class="card">
+    <h3>🏍️ VISHESH BIKE RUSH</h3><p>Fast lane change karo aur obstacles se bachko.</p>
+    <div class="hud"><span id="bikeStatus">READY</span><span>Distance: <b id="bikeScore">0</b></span></div>
+    <canvas id="bike" class="game-canvas" width="800" height="500"></canvas>
+    <div class="controls"><button id="bikeLeft">◀</button><button id="bikeStart">START</button><button id="bikeRight">▶</button></div>
+    <div class="help">Keyboard: A/D or ←/→ · Mobile: buttons</div>
+  </div>
+
+  <!-- DOG BONE CHASE -->
+  <div class="card">
+    <h3>🐕 DOG BONE CHASE</h3><p>Dog ko move karo aur falling bones collect karo.</p>
+    <div class="hud"><span id="dogStatus">READY</span><span>Score: <b id="dogScore">0</b></span></div>
+    <canvas id="dog" class="game-canvas" width="800" height="500"></canvas>
+    <div class="controls"><button id="dogLeft">◀</button><button id="dogStart">START</button><button id="dogRight">▶</button></div>
+    <div class="help">Keyboard: A/D or ←/→ · Mobile: buttons</div>
+  </div>
+
+  <!-- NEON TARGET -->
+  <div class="card">
+    <h3>🎯 NEON TARGET</h3><p>20 seconds mein targets tap/click karo.</p>
+    <div class="hud"><span id="targetStatus">READY</span><span>Hits: <b id="targetScore">0</b></span></div>
+    <canvas id="target" class="game-canvas" width="800" height="500"></canvas>
+    <div class="controls"><button id="targetStart">START 20s</button></div>
+    <div class="help">Mouse ya finger se glowing targets tap karo.</div>
+  </div>
 
 </div>
 </section>
 
-<footer id="about"><div class="bigv">VISHESH WORLD</div><p>© 2026 · Made as Vishesh's original mini game universe.</p></footer>
+<footer><div class="bigv">VISHESH WORLD</div><p>© 2026 · Created as Vishesh's ultimate 3D & Mini Game Universe.</p></footer>
 
 <script>
 const $=id=>document.getElementById(id);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-function setupCanvas(id){const c=$(id),x=c.getContext('2d');return [c,x]}
-function resizeForHiDPI(c,x){const r=c.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);const w=c.width,h=c.height;c.style.aspectRatio=w+'/'+h;if(c.width!==w*d){c.width=w*d;c.height=h*d}x.setTransform(d,0,0,d,0,0);return [w,h]}
 
-function laneX(lanes,lane,w){return w*(lane+.5)/lanes}
+/* =========================================================
+   1. 3D GARAGE CODE
+   ========================================================= */
+(function initGarage(){
+  const container = document.querySelector('.garage-container');
+  const canvas = $('garageCanvas');
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x060412);
+  
+  const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+  camera.position.set(0, 2.2, 5.5);
 
-/* CITY DRIVE */
-(()=>{const [c,x]=setupCanvas('car');let running=false,score=0,player=1,obs=[],coins=[],last=0,raf;
-function reset(){score=0;player=1;obs=[];coins=[];$('carScore').textContent=0;$('carStatus').textContent='PLAYING'}
-function spawn(){if(Math.random()<.7)obs.push({lane:Math.floor(Math.random()*3),y:-70,s:Math.random()*70+250});else coins.push({lane:Math.floor(Math.random()*3),y:-30})}
-function draw(t){const [w,h]=[800,500];x.clearRect(0,0,w,h);x.fillStyle='#29a85b';x.fillRect(0,0,w,h);
-x.fillStyle='#292b39';x.fillRect(120,0,560,h);x.fillStyle='#555';for(let i=0;i<12;i++){x.fillRect(380,i*55+(t/8%55),40,30);x.fillRect(240,i*55+(t/8%55),25,30);x.fillRect(535,i*55+(t/8%55),25,30)}
-obs.forEach(o=>{o.y+=o.s*0.016;let xx=laneX(3,o.lane,800)-35;x.fillStyle='#ff477e';x.fillRect(xx,o.y,70,55);x.fillStyle='#ffe45c';x.fillRect(xx+10,o.y+9,15,10);x.fillRect(xx+45,o.y+9,15,10)});
-coins.forEach(q=>{q.y+=250*.016;let xx=laneX(3,q.lane,800);x.beginPath();x.arc(xx,q.y,14,0,7);x.fillStyle='#ffe45c';x.fill();x.fillStyle='#7b4b00';x.font='bold 15px Arial';x.textAlign='center';x.fillText('$',xx,q.y+5)});
-let px=laneX(3,player,800)-34,py=420;x.fillStyle='#00e5ff';x.fillRect(px,py,68,58);x.fillStyle='#111';x.fillRect(px+10,py+8,48,18);x.fillStyle='#ffe45c';x.fillRect(px+7,py+45,14,7);x.fillRect(px+47,py+45,14,7);
-for(let o of obs){if(o.lane===player&&o.y+55>py&&o.y<py+58){running=false;$('carStatus').textContent='CRASH!';return}}
-coins=coins.filter(q=>{if(q.lane===player&&Math.abs(q.y-(py+25))<40){score+=10;return false}return q.y<530});obs=obs.filter(o=>o.y<530);score+=.05;$('carScore').textContent=Math.floor(score);if(Math.random()<.025)spawn();if(running)raf=requestAnimationFrame(draw)}
-function move(d){if(running)player=clamp(player+d,0,2)}$('carLeft').onpointerdown=()=>move(-1);$('carRight').onpointerdown=()=>move(1);$('carStart').onclick=()=>{cancelAnimationFrame(raf);reset();running=true;raf=requestAnimationFrame(draw)};addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a')move(-1);if(e.key==='ArrowRight'||e.key.toLowerCase()==='d')move(1)});draw(0)})();
+  const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-/* BIKE RUSH */
-(()=>{const [c,x]=setupCanvas('bike');let running=false,score=0,lane=1,items=[],raf;
-function draw(t){x.clearRect(0,0,800,500);x.fillStyle='#35a957';x.fillRect(0,0,800,500);x.fillStyle='#343640';x.fillRect(120,0,560,500);x.strokeStyle='#ddd';x.setLineDash([30,30]);x.lineWidth=6;for(let j=1;j<3;j++){x.beginPath();x.moveTo(120+j*186.7,0);x.lineTo(120+j*186.7,500);x.stroke()}x.setLineDash([]);
-items.forEach(o=>{o.y+=o.v*.016;let xx=120+(o.lane+.5)*186.7;x.fillStyle='#ff477e';x.fillRect(xx-28,o.y,56,70);x.fillStyle='#ffe45c';x.fillRect(xx-18,o.y+10,36,15)});
-let xx=120+(lane+.5)*186.7;x.fillStyle='#00e5ff';x.fillRect(xx-18,410,36,62);x.fillStyle='#111';x.beginPath();x.arc(xx,407,14,0,7);x.fill();x.beginPath();x.arc(xx,476,14,0,7);x.fill();
-for(let o of items)if(o.lane===lane&&o.y+70>410&&o.y<472){running=false;$('bikeStatus').textContent='CRASH!'}
-items=items.filter(o=>o.y<530);score+=.12;$('bikeScore').textContent=Math.floor(score);if(Math.random()<.025)items.push({lane:Math.floor(Math.random()*3),y:-80,v:250+Math.random()*120});if(running)raf=requestAnimationFrame(draw)}
-function move(d){if(running)lane=clamp(lane+d,0,2)}$('bikeLeft').onpointerdown=()=>move(-1);$('bikeRight').onpointerdown=()=>move(1);$('bikeStart').onclick=()=>{cancelAnimationFrame(raf);score=0;lane=1;items=[];running=true;$('bikeStatus').textContent='RIDING';raf=requestAnimationFrame(draw)};addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a')move(-1);if(e.key==='ArrowRight'||e.key.toLowerCase()==='d')move(1)});draw(0)})();
+  scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+  const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+  dirLight.position.set(5, 8, 5);
+  scene.add(dirLight);
 
-/* DOG */
-(()=>{const [c,x]=setupCanvas('dog');let running=false,score=0,dx=0,bones=[],raf;
-function draw(){x.clearRect(0,0,800,500);let g=x.createLinearGradient(0,0,0,500);g.addColorStop(0,'#6ed5ff');g.addColorStop(1,'#8be28b');x.fillStyle=g;x.fillRect(0,0,800,500);x.fillStyle='#55b95c';x.fillRect(0,410,800,90);
-bones.forEach(b=>{b.y+=4;x.font='34px Arial';x.fillText('🦴',b.x-17,b.y)});bones=bones.filter(b=>b.y<510);
-let px=clamp(400+dx,35,765);x.font='62px Arial';x.textAlign='center';x.fillText('🐕',px,455);
-for(let b of bones)if(Math.abs(b.x-px)<45&&Math.abs(b.y-440)<45){score+=10;b.y=600}
-bones=bones.filter(b=>b.y<510);$('dogScore').textContent=score;if(Math.random()<.035)bones.push({x:30+Math.random()*740,y:-20});if(running)raf=requestAnimationFrame(draw)}
-function move(d){if(running)dx=clamp(dx+d*45,-365,365)}$('dogLeft').onpointerdown=()=>move(-1);$('dogRight').onpointerdown=()=>move(1);$('dogStart').onclick=()=>{cancelAnimationFrame(raf);score=0;dx=0;bones=[];running=true;$('dogStatus').textContent='CHASE!';raf=requestAnimationFrame(draw)};addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a')move(-1);if(e.key==='ArrowRight'||e.key.toLowerCase()==='d')move(1)});draw()})();
+  const floor = new THREE.Mesh(new THREE.CylinderGeometry(3.6, 3.8, 0.2, 64), new THREE.MeshStandardMaterial({ color: 0x120e2e, roughness: 0.2 }));
+  floor.position.y = -0.1;
+  scene.add(floor);
 
-/* NEON TARGET */
-(()=>{const [c,x]=setupCanvas('target');let running=false,score=0,end=0,target={x:400,y:250,r:35};let raf;
-function place(){target={x:45+Math.random()*710,y:55+Math.random()*390,r:22+Math.random()*25}}
-function draw(t){x.clearRect(0,0,800,500);x.fillStyle='#100b2c';x.fillRect(0,0,800,500);for(let i=0;i<18;i++){x.fillStyle=['#00e5ff','#ff38b8','#ffe45c','#7cff6b'][i%4]+'22';x.beginPath();x.arc((i*97+t*.02)%800,(i*57)%500,3+(i%4),0,7);x.fill()}if(running){x.beginPath();x.arc(target.x,target.y,target.r,0,7);x.fillStyle='#ff38b8';x.fill();x.beginPath();x.arc(target.x,target.y,target.r*.62,0,7);x.fillStyle='#00e5ff';x.fill();x.beginPath();x.arc(target.x,target.y,target.r*.25,0,7);x.fillStyle='#ffe45c';x.fill();let left=Math.max(0,Math.ceil((end-performance.now())/1000));$('targetStatus').textContent=left+'s';if(performance.now()>=end){running=false;$('targetStatus').textContent='TIME!';}else raf=requestAnimationFrame(draw)}}
-c.addEventListener('pointerdown',e=>{if(!running)return;let r=c.getBoundingClientRect(),mx=(e.clientX-r.left)*800/r.width,my=(e.clientY-r.top)*500/r.height;if(Math.hypot(mx-target.x,my-target.y)<target.r+8){score++;$('targetScore').textContent=score;place()}});
-$('targetStart').onclick=()=>{score=0;$('targetScore').textContent=0;running=true;end=performance.now()+20000;place();$('targetStatus').textContent='20s';cancelAnimationFrame(raf);raf=requestAnimationFrame(draw)};draw(0)})();
-</script>
-</body>
-</html>
+  const garageGroup = new THREE.Group();
+  scene.add(garageGroup);
+  let isSpinning = true;
+
+  function createBMW() {
+    const bmw = new THREE.Group();
+    const bodyMat = new THREE.MeshStandardMaterial({ color: 0x0066ff, metalness: 0.8, roughness: 0.2 });
+    const darkMat = new THREE.MeshStandardMaterial({ color: 0x111111 });
+    
+    const chassis = new THREE.Mesh(new THREE.BoxGeometry(1.9, 0.55, 4.0), bodyMat);
+    chassis.position.y = 0.45;
+    bmw.add(chassis);
+
+    const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.48, 2.0), new THREE.MeshPhysicalMaterial({ color: 0x111122, transmission: 0.6 }));
+    cabin.position.set(0, 0.88, -0.1);
+    bmw.add(cabin);
+
+    [[-0.95,0.36,1.2],[0.95,0.36,1.2],[-0.95,0.36,-1.2],[0.95,0.36,-1.2]].forEach(p=>{
+      const w = new THREE.Mesh(new THREE.CylinderGeometry(0.36,0.36,0.25,24), darkMat);
+      w.rotateZ(Math.PI/2); w.position.set(...p); bmw.add(w);
+    });
+    return bmw;
+  }
+
+  function createGT650() {
+    const bike = new THREE.Group();
+    const chrome = new THREE.MeshStandardMaterial({ color: 0xeeeeee, metalness: 0.9 });
+    const red = new THREE.MeshStandardMaterial({ color: 0xcc1100 });
+    
+    const tank = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.35, 0.85), red);
+    tank.position.set(0, 0.92, 0.2);
+    bike.add(tank);
+
+    const engine = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.5, 16), chrome);
+    engine.position.set(0, 0.5, 0.1);
+    bike.add(engine);
+
+    [1.05, -0.95].forEach(z => {
+      const w = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.09, 12, 32), new THREE.MeshStandardMaterial({ color: 0x111 }));
+      w.position.set(0, 0.45, z); bike.add(w);
+    });
+    return bike;
+  }
+
+  const bmw = createBMW();
+  const gt = createGT650();
+  garageGroup.add(bmw);
+
+  let isDragging = false, prevX = 0;
+  canvas.onmousedown = e => { isDragging = true; prevX = e.clientX; };
+  window.onmouseup = () => isDragging = false;
+  canvas.onmousemove = e => {
+    if (isDragging) {
+      garageGroup.rotation.y += (e.clientX - prevX) * 0.01;
+      prevX = e.clientX;
+    }
+  };
+
+  $('btnBMW').onclick = () => { garageGroup.clear(); garageGroup.add(bmw); $('modelLabel').textContent="SHOWROOM: BMW M4 COMPETITION"; };
+  $('btnGT650').onclick = () => { garageGroup.clear(); garageGroup.add(gt); $('modelLabel').textContent="SHOWROOM: CONTINENTAL GT 650"; };
+  $('btnSpin').onclick = () => { isSpinning = !isSpinning; $('btnSpin').textContent=`🔄 Auto-Spin: ${isSpinning?'ON':'OFF'}`; };
+
+  function animate() {
+    requestAnimationFrame(animate);
+    if(isSpinning && !isDragging) garageGroup.rotation.y += 0.008;
+    renderer.render(scene, camera);
+  }
+  animate();
+})();
+
+/* =========================================================
+   2. MINECRAFT 3D MULTIPLAYER ENGINE (THREE.JS + PEERJS)
+   ========================================================= */
+(function initMinecraft(){
+  const container = $('mcBox');
+  const canvas = $('mcCanvas');
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x87ceeb); // Sky blue
+  scene.fog = new THREE.FogExp2(0x87ceeb, 0.02);
+
+  const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+  renderer.setSize(container.clientWidth, container.clientHeight);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+  const sun = new THREE.DirectionalLight(0xffffff, 0.8);
+  sun.position.set(50, 100, 50);
+  scene.add(sun);
+
+  // Block Materials
+  const blockMats = {
+    1: new THREE.MeshStandardMaterial({ color: 0x557a2b }), // Grass
+    2: new THREE.MeshStandardMaterial({ color: 0x795548 }), // Dirt
+    3: new THREE.MeshStandardMaterial({ color: 0x808080 }), // Stone
+    4: new THREE.MeshStandardMaterial({ color: 0xb8860b }), // Wood
+    5: new THREE.MeshStandardMaterial({ color: 0x4682b4 })  // Brick
+  };
+  const boxGeo = new THREE.BoxGeometry(1, 1, 1);
+  const blocksMap = new Map();
+
+  function addBlock(x, y, z, type, emit = true) {
+    const key = `${x},${y},${z}`;
+    if (blocksMap.has(key)) return;
+    const mesh = new THREE.Mesh(boxGeo, blockMats[type] || blockMats[1]);
+    mesh.position.set(x, y, z);
+    scene.add(mesh);
+    blocksMap.set(key, mesh);
+
+    if (emit && dataConn && dataConn.open) {
+      dataConn.send({ action: 'place', x, y, z, type });
+    }
+  }
+
+  function removeBlock(x, y, z, emit = true) {
+    const key = `${x},${y},${z}`;
+    if (blocksMap.has(key)) {
+      scene.remove(blocksMap.get(key));
+      blocksMap.delete(key);
+      if (emit && dataConn && dataConn.open) {
+        dataConn.send({ action: 'remove', x, y, z });
+      }
+    }
+  }
+
+  // Generate Voxel World Floor
+  for(let x = -8; x <= 8; x++) {
+    for(let z = -8; z <= 8; z++) {
+      addBlock(x, 0, z, 1, false);
+      addBlock(x, -1, z, 2, false);
+    }
+  }
+
+  // First Person Player Physics & Controls
+  camera.position.set(0, 2, 5);
+  let keys = {}, moveSpeed = 0.12;
+  let activeBlockType = 1;
+
+  // Pointer Lock for Mouse Look
+  canvas.onclick = () => { canvas.requestPointerLock(); };
+  document.addEventListener('pointerlockchange', () => {
+    $('mcStatus').textContent = document.pointerLockElement === canvas ? "PLAYING - ESC to Exit Mouse Lock" : "CLICK GAME TO PLAY";
+  });
+
+  let yaw = 0, pitch = 0;
+  document.addEventListener('mousemove', e => {
+    if (document.pointerLockElement === canvas) {
+      yaw -= e.movementX * 0.002;
+      pitch -= e.movementY * 0.002;
+      pitch = clamp(pitch, -Math.PI/2.2, Math.PI/2.2);
+      camera.rotation.set(0, 0, 0);
+      camera.rotateY(yaw);
+      camera.rotateX(pitch);
+    }
+  });
+
+  window.addEventListener('keydown', e => {
+    keys[e.key.toLowerCase()] = true;
+    if(['1','2','3','4','5'].includes(e.key)){
+      activeBlockType = parseInt(e.key);
+      document.querySelectorAll('.mc-slot').forEach(s => s.classList.remove('selected'));
+      document.querySelectorAll('.mc-slot')[activeBlockType-1].classList.add('selected');
+    }
+  });
+  window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
+
+  // Raycasting for Mining/Placing
+  const raycaster = new THREE.Raycaster();
+  canvas.addEventListener('mousedown', e => {
+    if (document.pointerLockElement !== canvas) return;
+    raycaster.setFromCamera(new THREE.Vector2(0, 0), camera)
